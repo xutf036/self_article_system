@@ -1,4 +1,6 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
+# pnpm lint
+# lint-staged只会检查暂存区新添加的代码，不回去管历史问题，已经提交到仓库中的历史错误
 pnpm lint-staged
