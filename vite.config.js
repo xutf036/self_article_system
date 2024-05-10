@@ -8,6 +8,7 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  // publiicPath: './',
   plugins: [
     vue(),
     AutoImport({
@@ -17,7 +18,7 @@ export default defineConfig({
       resolvers: [ElementPlusResolver()]
     })
   ],
-  // base: '/xutf',
+  base: './',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
