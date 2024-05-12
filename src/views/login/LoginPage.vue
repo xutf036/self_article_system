@@ -35,8 +35,8 @@ const rules = {
   password: [
     { required: true, message: '请输入密码', trigger: 'blur' },
     {
-      pattern: /^\S{1,15}$/,
-      message: '密码必须是 1-15 位非空字符',
+      pattern: /^\S{6,15}$/,
+      message: '密码必须是 6-15 位非空字符',
       trigger: 'blur'
     }
   ],
@@ -103,7 +103,7 @@ watch(isRegister, () => {
           <el-input v-model="formModel.password" :prefix-icon="Lock" type="password" placeholder="请输入密码" show-password></el-input>
         </el-form-item>
         <el-form-item prop="repassword">
-          <el-input v-model="formModel.repassword" :prefix-icon="Lock" type="password" placeholder="请再次输入密码" show-password></el-input>
+          <el-input @keydown.enter="register" v-model="formModel.repassword" :prefix-icon="Lock" type="password" placeholder="请再次输入密码" show-password></el-input>
         </el-form-item>
         <el-form-item>
           <el-button @click="register" class="button" type="primary" auto-insert-space>注册</el-button>
@@ -122,7 +122,7 @@ watch(isRegister, () => {
           <el-input v-model="formModel.username" :prefix-icon="User" placeholder="请输入用户名"></el-input>
         </el-form-item>
         <el-form-item prop="password">
-          <el-input v-model="formModel.password" :prefix-icon="Lock" placeholder="请输入密码" type="password" show-password></el-input>
+          <el-input @keydown.enter="login" v-model="formModel.password" :prefix-icon="Lock" placeholder="请输入密码" type="password" show-password></el-input>
         </el-form-item>
         <el-form-item class="flex">
           <div class="flex">
