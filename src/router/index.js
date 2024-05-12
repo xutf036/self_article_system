@@ -1,3 +1,4 @@
+import { useUserStore } from '@/stores'
 import {
   createRouter,
   // createWebHistory,
@@ -43,6 +44,21 @@ const router = createRouter({
       ]
     }
   ]
+})
+
+// 登录访问拦截 => 默认是直接放行 (全局前置守卫)
+// 返回值是 true / undefined 放行
+//          false 拦截到 from 的页面
+//          具体路径或路径对象，拦截到相对应的地址
+// 参数 to 去哪 即将要进入的目标
+//      from 从哪来 当前导航正要离开的路由
+// const userStore = useUserStore() // 这行代码放这里会报错
+router.beforeEach((to) => {
+  // 如果当前访问的是非登录页，且没有token，=> 拦截到登录页 ，其余情况正常放行（默认）
+  const userStore = useUserStore()
+  if (!userStore.token && to.path !== '/login') {
+    return '/login'
+  }
 })
 
 export default router
