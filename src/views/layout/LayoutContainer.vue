@@ -1,5 +1,12 @@
 <script setup>
+import { useUserStore } from '@/stores'
 import { Memo, Management, UserFilled, Edit, Avatar, EditPen, CaretBottom, SwitchButton } from '@element-plus/icons-vue'
+import { onMounted } from 'vue'
+
+const userStore = useUserStore()
+onMounted(() => {
+  userStore.getUser()
+})
 </script>
 <template>
   <el-container class="layout-container">
@@ -40,10 +47,12 @@ import { Memo, Management, UserFilled, Edit, Avatar, EditPen, CaretBottom, Switc
     <el-container>
       <!-- 头部 -->
       <el-header>
-        <div>用户昵称：<strong>用户昵称</strong></div>
+        <div>
+          用户昵称：<strong>{{ userStore.user.nickname || userStore.user.username }}</strong>
+        </div>
         <el-dropdown placement="bottom-end">
           <span class="el-dropdown__box">
-            <el-avatar :src="avatar"></el-avatar>
+            <el-avatar :src="userStore.user.user_pic || avatar"></el-avatar>
             <el-icon><CaretBottom /></el-icon>
           </span>
           <template #dropdown>
