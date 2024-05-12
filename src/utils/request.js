@@ -36,6 +36,7 @@ instance.interceptors.response.use(
       return response
     }
     // 4.响应成功，但业务处理失败
+    console.log('响应成功，但处理业务失败')
     ElMessage.error(response.data.message || '服务异常')
     return Promise.reject(response.data)
   },
@@ -51,3 +52,6 @@ instance.interceptors.response.use(
     return Promise.reject(error)
   }
 )
+
+export default instance
+export { baseURL }
