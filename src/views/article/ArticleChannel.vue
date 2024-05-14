@@ -1,7 +1,8 @@
 <script setup>
-import { artGetChannelsService } from '@/api/article.js'
+import { artDelChannelService, artGetChannelsService } from '@/api/article.js'
 import { ref } from 'vue'
 import { Edit, Delete } from '@element-plus/icons-vue'
+import ChannelEdit from './components/ChannelEdit.vue'
 
 // 获取数据
 const channelList = ref([])
@@ -22,18 +23,38 @@ getChannelList()
 
 // 编辑文章分类
 const onEditChannel = (row) => {
-  console.log(row)
+  // console.log(row)
+  dialog.value.open(row)
 }
 // 删除文章分类
-const onDelChannel = (row) => {
+const onDelChannel = async (row) => {
   console.log(row)
+  await ElMessageBox.confirm('你确认要删除该文章分类吗？', '温馨提示', {
+    type: 'warning',
+    confirButton: '确认',
+    concelButton: '取消'
+  })
+  await artDelChannelService(row.id)
+  ElMessage.success('删除文章分类成功！')
+  // 删除文章分类后重新进行渲染
+  getChannelList()
+}
+// 对话框相关
+// 如何使用组件暴露出的方法？ => 1. ref 绑定组件 2. 使用组件暴露出的方法
+const dialog = ref()
+// 添加文章分类
+const onAddChannel = () => {
+  dialog.value.open({})
+}
+const onSuccess = () => {
+  getChannelList()
 }
 </script>
 
 <template>
   <page-container title="文章分类">
     <template #extra>
-      <el-button type="primary">添加分类</el-button>
+      <el-button @click="onAddChannel" type="primary">添加分类</el-button>
     </template>
 
     <!-- 文章分类情况表格 -->
@@ -55,5 +76,8 @@ const onDelChannel = (row) => {
         <el-empty description="当前没有数据，快去添加一个文章分类吧~" />
       </template>
     </el-table>
+
+    <!-- 点击 添加分类 编辑分类 显示的对话框 -->
+    <channel-edit @success="onSuccess" ref="dialog"></channel-edit>
   </page-container>
 </template>
