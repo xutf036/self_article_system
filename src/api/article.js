@@ -1,5 +1,6 @@
 import request from '@/utils/request.js'
 
+// 文章分类相关
 // 获取文章分类
 export const artGetChannelsService = () => {
   return request.get('/my/cate/list')
@@ -14,4 +15,11 @@ export const artEditChannelService = (data) => request.put('/my/cate/info', data
 export const artDelChannelService = (id) =>
   request.delete('/my/cate/del', {
     params: { id }
+  })
+
+// 文章管理相关
+// 获取文章列表
+export const artGetListService = (params) =>
+  request.get('/my/article/list', {
+    params
   })
