@@ -1,3 +1,3 @@
 <template>
-  <div>重置密码</div>
+  <page-container title="重置密码"></page-container>
 </template>
