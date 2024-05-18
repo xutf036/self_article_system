@@ -23,3 +23,17 @@ export const artGetListService = (params) =>
   request.get('/my/article/list', {
     params
   })
+// 发布文章
+export const artPublishService = (data) => request.post('/my/article/add', data)
+// 获取文章详情 params 参数必须放在一个 {}中！！！！！！！{} { } params: {}
+export const artGetDetailService = (id) =>
+  request.get('/my/article/info', {
+    params: { id }
+  })
+// 更新文章详情
+export const artEditService = (data) => request.put('/my/article/info', data)
+// 删除文章
+export const artDeleteService = (id) =>
+  request.delete('/my/article/info', {
+    params: { id }
+  })

@@ -2,8 +2,9 @@
 import ChannelSelect from './components/ChannelSelect.vue'
 import { ref } from 'vue'
 import { Edit, Delete } from '@element-plus/icons-vue'
-import { artGetListService } from '@/api/article'
+import { artDeleteService, artGetListService } from '@/api/article'
 import { formatTime } from '@/utils/format.js'
+import ArticleEdit from './components/ArticleEdit.vue'
 
 // 请求参数
 const params = ref({
@@ -16,7 +17,7 @@ const params = ref({
 const total = ref(0)
 const loading = ref(false)
 
-// 获取文章列表
+// 获取渲染文章列表
 const articleList = ref([])
 
 const getArtList = async () => {
@@ -32,14 +33,6 @@ const getArtList = async () => {
 }
 getArtList()
 
-// 编辑文章逻辑
-const onEditArticle = () => {
-  console.log('编辑文章')
-}
-// 删除文章逻辑
-const onDeleteArticle = () => {
-  console.log('删除文章')
-}
 // 分页逻辑 两个相应的处理函数会获取最新的 页码值 / 每页条数值 作为形参
 // 当前页变化
 const handleCurrentChange = (pagenum) => {
@@ -65,11 +58,48 @@ const onReset = () => {
   params.value.state = ''
   getArtList()
 }
+
+// 编辑文章逻辑
+const articleEditRef = ref()
+const onEditArticle = (row) => {
+  console.log('编辑文章')
+  // console.log(row)
+  articleEditRef.value.open(row)
+}
+// 添加文章逻辑
+const onAddArticle = () => {
+  articleEditRef.value.open({})
+}
+// 删除文章逻辑
+const onDeleteArticle = async (row) => {
+  console.log('删除文章')
+  await ElMessageBox.confirm('你确定要删除这篇文章吗', '温馨提示', {
+    confirmButtonText: '确认',
+    cancelButtonText: '取消',
+    type: 'warning'
+  })
+  await artDeleteService(row.id)
+  ElMessage.success('文章删除成功')
+  getArtList()
+}
+
+// 发布文章 / 修改文章 后的回显
+const onSuccess = (type) => {
+  if (type === 'add') {
+    // 如果是添加文章，则渲染时可以跳转到最新一页
+    const lastPage = Math.ceil((total.value + 1) / params.value.pagesize)
+    params.value.pagenum = lastPage
+    getArtList()
+  } else {
+    // 如果是修改文章，修改完直接重新渲染当前页面即可
+    getArtList()
+  }
+}
 </script>
 <template>
   <page-container title="文章管理">
     <template #extra>
-      <el-button type="primary">发布文章</el-button>
+      <el-button @click="onAddArticle" type="primary">发布文章</el-button>
     </template>
 
     <!-- 表单区域 -->
@@ -107,8 +137,10 @@ const onReset = () => {
       </el-table-column>
       <el-table-column prop="state" label="状态"></el-table-column>
       <el-table-column label="操作">
-        <el-button @click="onEditArticle" plain circle :icon="Edit" type="primary"></el-button>
-        <el-button @click="onDeleteArticle" plain circle :icon="Delete" type="danger"></el-button>
+        <template #default="{ row }">
+          <el-button @click="onEditArticle(row)" plain circle :icon="Edit" type="primary"></el-button>
+          <el-button @click="onDeleteArticle(row)" plain circle :icon="Delete" type="danger"></el-button>
+        </template>
       </el-table-column>
       <template #empty>
         <el-empty>当前没有文章，快去发布一篇文章吧~</el-empty>
@@ -120,7 +152,6 @@ const onReset = () => {
       v-model:current-page="params.pagenum"
       v-model:page-size="params.pagesize"
       :page-sizes="[2, 3, 5, 10]"
-      :small="small"
       :background="true"
       layout="jumper, total, sizes, prev, pager, next, "
       :total="total"
@@ -128,5 +159,8 @@ const onReset = () => {
       @current-change="handleCurrentChange"
       style="margin-top: 20px; justify-content: flex-end"
     />
+
+    <!-- 编辑文章 使用 Elment-Plus 中抽屉组件 -->
+    <article-edit @success="onSuccess" ref="articleEditRef"></article-edit>
   </page-container>
 </template>
