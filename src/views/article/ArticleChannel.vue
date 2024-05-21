@@ -73,7 +73,7 @@ const onSuccess = () => {
         </template>
       </el-table-column>
       <template #empty>
-        <el-empty description="当前没有数据，快去添加一个文章分类吧~" />
+        <el-empty description="快添加一个文章分类吧，有了分类才能发布文章哦~" />
       </template>
     </el-table>
 

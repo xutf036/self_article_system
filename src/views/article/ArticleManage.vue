@@ -59,10 +59,20 @@ const onReset = () => {
   getArtList()
 }
 
+// 查看文章逻辑
+const onReadArticle = (row) => {
+  console.log('查看文章详情')
+  // const read = true
+  row.publish = true
+  // console.log(row.publish)
+  // console.log(row.id)
+  articleEditRef.value.open(row)
+}
 // 编辑文章逻辑
 const articleEditRef = ref()
 const onEditArticle = (row) => {
   console.log('编辑文章')
+  row.publish = false
   // console.log(row)
   articleEditRef.value.open(row)
 }
@@ -126,7 +136,7 @@ const onSuccess = (type) => {
     <el-table v-loading="loading" :data="articleList" style="width: 100%">
       <el-table-column prop="title" label="文章标题">
         <template #default="{ row }">
-          <el-link :underline="false" type="primary">{{ row.title }}</el-link>
+          <el-link @click="onReadArticle(row)" :underline="false" type="primary">{{ row.title }}</el-link>
         </template>
       </el-table-column>
       <el-table-column prop="cate_name" label="分类"></el-table-column>
@@ -143,7 +153,7 @@ const onSuccess = (type) => {
         </template>
       </el-table-column>
       <template #empty>
-        <el-empty>当前没有文章，快去发布一篇文章吧~</el-empty>
+        <el-empty description="当前没有文章，快去发布一篇文章吧~"></el-empty>
       </template>
     </el-table>
 

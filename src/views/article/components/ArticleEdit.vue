@@ -3,8 +3,7 @@ import { ref } from 'vue'
 import ChannelSelect from './ChannelSelect.vue'
 import { Plus } from '@element-plus/icons-vue'
 import { QuillEditor } from '@vueup/vue-quill'
-import '@vueup/vue-quill/dist/vue-quill.snow.css'
-import { artEditService, artGetDetailService, artPublishService } from '@/api/article'
+import { artEditService, artGetDetailService, artPublishService } from '@/api/article.js'
 import axios from 'axios'
 import { baseURL } from '@/utils/request.js'
 
@@ -17,6 +16,15 @@ const formModel = ref({
   cover_img: '',
   state: ''
 })
+const rules = {
+  title: [
+    { min: 1, max: 30, message: '请输入 1-30 个任意字符作为文章标题', trigger: 'blur' },
+    { required: true, message: '请输入 1-30 个任意字符作为文章标题', trigger: 'blur' }
+  ],
+  cate_id: [{ required: true, message: '请输入 1-30 个任意字符作为文章标题', trigger: 'blur' }],
+  cover_img: [{ required: true, message: '请输入 1-30 个任意字符作为文章标题', trigger: 'blur' }],
+  content: [{ required: true, message: '请输入 1-30 个任意字符作为文章标题', trigger: 'blur' }]
+}
 const formRef = ref()
 const editorRef = ref()
 
@@ -32,9 +40,12 @@ const onSelectFile = (UploadFile) => {
 // 根据 open 方法传递过来的参数，来确定是 添加分类 / 编辑分类
 // 因为 添加分类 不需要数据，所以传过来的是空数据
 // 而   编辑分类 意味着要将之前的分类信息先回显，需要先将之前的分类信息传过来
+// const readOnly = ref(true)
 const open = async (row) => {
   visibleDrawer.value = true
   // console.log('row', row)
+  // console.log('row.id', row.id)
+  // console.log('row.publish', row.publish)
   if (row.id) {
     console.log('编辑文章')
     formModel.value = row
@@ -106,14 +117,14 @@ defineExpose({
 </script>
 <template>
   <!-- 因为 发布文章 与 编辑文章 均需要显示一个抽屉组件，故将其进行封装 -->
-  <el-drawer v-model="visibleDrawer" :title="formModel.id ? '编辑文章' : '添加文章'" size="40%">
+  <el-drawer v-model="visibleDrawer" :title="formModel.id ? '编辑文章' : '添加文章'" size="100%">
     <!-- 表单结构 -->
-    <el-form ref="formRef" :value="formModel" :rules="rules" label-width="100px">
+    <el-form ref="formRef" :model="formModel" :rules="rules" label-width="25%">
       <el-form-item label="文章标题" prop="title">
-        <el-input v-model="formModel.title" placeholder="请输入文章标题"></el-input>
+        <el-input style="width: 50%" v-model="formModel.title" placeholder="请输入文章标题"></el-input>
       </el-form-item>
       <el-form-item label="文章分类" prop="cate_id">
-        <channel-select v-model="formModel.cate_id" style="width: 100%"></channel-select>
+        <channel-select v-model="formModel.cate_id" style="width: 50%"></channel-select>
       </el-form-item>
       <el-form-item label="文章封面" prop="cover_img">
         <!-- 此处需要关闭 Element-Plus 中的文件自动上传，不需要配置 action 等参数
@@ -126,8 +137,8 @@ defineExpose({
         </el-upload>
       </el-form-item>
       <el-form-item label="文章内容" prop="content">
-        <div class="editor">
-          <QuillEditor ref="editorRef" theme="snow" v-model:content="formModel.content" contentType="html"></QuillEditor>
+        <div class="editor" style="width: 50%">
+          <QuillEditor placeholder="请在此输入文章正文... ..." ref="editorRef" theme="snow" v-model:content="formModel.content" contentType="html"></QuillEditor>
         </div>
       </el-form-item>
       <el-form-item label="">
@@ -136,6 +147,10 @@ defineExpose({
       </el-form-item>
     </el-form>
   </el-drawer>
+
+  <!-- <el-drawer>
+    <div>只读文章内容</div>
+  </el-drawer> -->
 </template>
 <style lang="scss" scoped>
 .avatar-uploader {

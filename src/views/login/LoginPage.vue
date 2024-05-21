@@ -58,12 +58,15 @@ const rules = {
 
 const form = ref()
 // 注册前的预校验,用到了element-plus中form组件暴露出来的方法，所以需要获取form组件 （ref）
+// const registerToLogin = ref(false)
 const register = async () => {
   await form.value.validate()
   // 成功 => 发送请求
   await userRegisterService(formModel.value) // .value!!!!
+  // registerToLogin.value = true
   // 提示用户
   ElMessage.success('注册成功')
+  isRegister.value = false
 }
 
 // 登录前的预校验
@@ -84,8 +87,20 @@ const login = async () => {
 // 登录页注册页切换的时候重置表单数据
 watch(isRegister, () => {
   // element-plus组件暴露出的方法，重置表单数据
-  form.value.resetFields()
+  // 改进：如果是 注册转到登录页，则不重置表单数据
+  // console.log('isRegister', isRegister.value)
+  if (isRegister.value) {
+    // console.log(isRegister.value)
+    formModel.value = {
+      username: '',
+      password: '',
+      repassword: ''
+    }
+  }
+  // registerToLogin.value = false
 })
+
+const checked = ref(true)
 </script>
 <template>
   <el-row class="login-page">
@@ -126,7 +141,7 @@ watch(isRegister, () => {
         </el-form-item>
         <el-form-item class="flex">
           <div class="flex">
-            <el-checkbox>记住我</el-checkbox>
+            <el-checkbox v-model="checked">记住我</el-checkbox>
             <el-link type="primary" :underline="false">忘记密码？</el-link>
           </div>
         </el-form-item>

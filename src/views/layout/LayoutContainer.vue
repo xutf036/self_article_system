@@ -3,6 +3,7 @@ import { useUserStore } from '@/stores'
 import { Memo, Management, UserFilled, Edit, Avatar, EditPen, CaretBottom, SwitchButton } from '@element-plus/icons-vue'
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import avatar from '@/assets/default_avatar.jpg'
 
 const userStore = useUserStore()
 onMounted(() => {
