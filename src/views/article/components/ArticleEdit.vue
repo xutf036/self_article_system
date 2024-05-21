@@ -8,6 +8,7 @@ import { artEditService, artGetDetailService, artPublishService } from '@/api/ar
 import axios from 'axios'
 import { baseURL } from '@/utils/request.js'
 import { formatTime } from '@/utils/format'
+import { nextTick } from 'vue'
 
 const visibleDrawer = ref(false)
 // 准备编辑文章表单数据
@@ -45,6 +46,7 @@ const onSelectFile = (UploadFile) => {
 const readOnly = ref(true)
 const open = async (row) => {
   if (row.id && row.read) {
+    visibleDrawer.value = true
     readOnly.value = true
     formModel.value = row
     const res = await artGetDetailService(row.id)
@@ -63,6 +65,8 @@ const open = async (row) => {
   // console.log('row.publish', row.publish)
   else if (row.id) {
     readOnly.value = false
+
+    visibleDrawer.value = true
     console.log('编辑文章')
     formModel.value = row
     const res = await artGetDetailService(row.id)
@@ -74,15 +78,20 @@ const open = async (row) => {
     console.log(formModel.value)
   } else {
     readOnly.value = false
+    visibleDrawer.value = true
     // console.log('发布文章')
     // 清空表单数据
     formModel.value = { title: '', cate_id: '', content: '', cover_img: '', state: '' }
     // 封面 和 富文本编辑器内容需要单独重置
     imgUrl.value = ''
-    editorRef.value.setHTML('')
-  }
+    // console.log('editorRef.value', editorRef.value)
+    nextTick(() => {
+      // 等 DOM 更新完，有了富文本编辑器组件之后，才能使用相对应的方法
+      editorRef.value.setHTML('')
+    })
 
-  visibleDrawer.value = true
+    // editorRef.value.setHTML('')
+  }
 }
 // 将网络图片地址转换为File对象
 async function imageUrlToFile(url, fileName) {
