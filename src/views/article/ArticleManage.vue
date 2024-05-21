@@ -63,8 +63,8 @@ const onReset = () => {
 const onReadArticle = (row) => {
   console.log('查看文章详情')
   // const read = true
-  row.publish = true
-  // console.log(row.publish)
+  row.read = true
+  // console.loread)
   // console.log(row.id)
   articleEditRef.value.open(row)
 }
@@ -72,7 +72,7 @@ const onReadArticle = (row) => {
 const articleEditRef = ref()
 const onEditArticle = (row) => {
   console.log('编辑文章')
-  row.publish = false
+  row.read = false
   // console.log(row)
   articleEditRef.value.open(row)
 }
